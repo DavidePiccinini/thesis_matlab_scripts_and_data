@@ -1,7 +1,7 @@
 %--------------------------------------------------------------------------
 %% Script to analyse EXO outdoor experiments data
 clc;
-% close all;
+close all;
 
 load("EXO_Outdoor_Data.mat");
 
@@ -131,31 +131,312 @@ position_part10 = part10outdoorexo(:, 2:4);
 position_part10 = round(cell2mat(position_part10), 2);
 
 % Plot the motion of the drone
+targetsPos_X = [14.67, 22.57, 0.27, -8.96, -24.79];
+targetsPos_Y = [16.89, -33.92, -1.19, 19.49, -24.72];
+targetsPos_Z = [19.45, 0.25, 0.25, 14.17, 4.85];
+
+initPos_size = 250;
+target_size = 150;
+pos_size = 80;
+font_size = 10;
+
+fh = figure;
+fh.Position = [0, 50, 900, 600];
+loops = size(position_part1, 1);
+view3D(loops) = struct('cdata',[],'colormap',[]);
+for i=2:loops
+    
+    scatter3(position_part1(1, 1), position_part1(1, 2), position_part1(1, 3), initPos_size, "r", "filled", "v");
+    
+    view(70, 20);
+    axis([-30, 40, -42, 21, 0, 30])
+    xlabel("x [m]")
+    ylabel("y [m]")
+    zlabel("z [m]")
+    hold on;
+    
+    % Change the target color and show the position of the drone when a
+    % target is identified
+    if i < 165
+        scatter3(targetsPos_X, targetsPos_Y, targetsPos_Z, target_size, "k", "filled", "s");
+        
+        scatter3(position_part1(i, 1), position_part1(i, 2), position_part1(i, 3), pos_size, "b", "filled");
+        
+        plot3([position_part1(1:i-1, 1), position_part1(2:i, 1)], [position_part1(1:i-1, 2), position_part1(2:i, 2)], [position_part1(1:i-1, 3), position_part1(2:i, 3)], "c");
+        
+%         legend("Starting position", "Unidentified targets", "Drone position", "Trajectory", "Location", "northwest", "FontSize", font_size)
+    elseif i < 230
+        scatter3([targetsPos_X(1:3), targetsPos_X(end)], [targetsPos_Y(1:3), targetsPos_Y(end)], [targetsPos_Z(1:3), targetsPos_Z(end)], target_size, "k", "filled", "s");
+        scatter3(targetsPos_X(4), targetsPos_Y(4), targetsPos_Z(4), target_size, "g", "filled", "s");
+        
+        scatter3(position_part1(165, 1), position_part1(165, 2), position_part1(165, 3), pos_size, [0.8500 0.3250 0.0980], "filled");
+        
+        scatter3(position_part1(i, 1), position_part1(i, 2), position_part1(i, 3), pos_size, "b", "filled");
+        plot3([position_part1(1:i-1, 1), position_part1(2:i, 1)], [position_part1(1:i-1, 2), position_part1(2:i, 2)], [position_part1(1:i-1, 3), position_part1(2:i, 3)], "c");
+        
+%         legend("Starting position", "Unidentified targets", "Identified targets", "Drone position when a target is identified", "Drone position", "Trajectory", "Location", "northwest", "FontSize", font_size)
+    elseif i < 324
+        scatter3(targetsPos_X(1:3), targetsPos_Y(1:3), targetsPos_Z(1:3), target_size, "k", "filled", "s");
+        scatter3(targetsPos_X(4:end), targetsPos_Y(4:end), targetsPos_Z(4:end), target_size, "g", "filled", "s");
+        
+        id_pos_X = [position_part1(165, 1), position_part1(230, 1)];
+        id_pos_Y = [position_part1(165, 2), position_part1(230, 2)];
+        id_pos_Z = [position_part1(165, 3), position_part1(230, 3)];
+        
+        scatter3(id_pos_X, id_pos_Y, id_pos_Z, pos_size, [0.8500 0.3250 0.0980], "filled");
+        
+        scatter3(position_part1(i, 1), position_part1(i, 2), position_part1(i, 3), pos_size, "b", "filled");
+        plot3([position_part1(1:i-1, 1), position_part1(2:i, 1)], [position_part1(1:i-1, 2), position_part1(2:i, 2)], [position_part1(1:i-1, 3), position_part1(2:i, 3)], "c");
+        
+%         legend("Starting position", "Unidentified targets", "Identified targets", "Drone position when a target is identified", "Drone position", "Trajectory", "Location", "northwest", "FontSize", font_size)
+    elseif i < 409
+        scatter3([targetsPos_X(1), targetsPos_X(3)], [targetsPos_Y(1), targetsPos_Y(3)], [targetsPos_Z(1), targetsPos_Z(3)], target_size, "k", "filled", "s");
+        scatter3([targetsPos_X(2), targetsPos_X(4:end)], [targetsPos_Y(2), targetsPos_Y(4:end)], [targetsPos_Z(2), targetsPos_Z(4:end)], target_size, "g", "filled", "s");
+        
+        id_pos_X = [position_part1(165, 1), position_part1(230, 1), position_part1(324, 1)];
+        id_pos_Y = [position_part1(165, 2), position_part1(230, 2), position_part1(324, 2)];
+        id_pos_Z = [position_part1(165, 3), position_part1(230, 3), position_part1(324, 3)];
+        
+        scatter3(id_pos_X, id_pos_Y, id_pos_Z, pos_size, [0.8500 0.3250 0.0980], "filled");
+        
+        scatter3(position_part1(i, 1), position_part1(i, 2), position_part1(i, 3), pos_size, "b", "filled");
+        plot3([position_part1(1:i-1, 1), position_part1(2:i, 1)], [position_part1(1:i-1, 2), position_part1(2:i, 2)], [position_part1(1:i-1, 3), position_part1(2:i, 3)], "c");
+        
+%         legend("Starting position", "Unidentified targets", "Identified targets", "Drone position when a target is identified", "Drone position", "Trajectory", "Location", "northwest", "FontSize", font_size)
+    elseif i < 469
+        scatter3(targetsPos_X(3), targetsPos_Y(3), targetsPos_Z(3), target_size, "k", "filled", "s");
+        scatter3([targetsPos_X(1:2), targetsPos_X(4:end)], [targetsPos_Y(1:2), targetsPos_Y(4:end)], [targetsPos_Z(1:2), targetsPos_Z(4:end)], target_size, "g", "filled", "s");
+        
+        id_pos_X = [position_part1(165, 1), position_part1(230, 1), position_part1(324, 1), position_part1(409, 1)];
+        id_pos_Y = [position_part1(165, 2), position_part1(230, 2), position_part1(324, 2), position_part1(409, 2)];
+        id_pos_Z = [position_part1(165, 3), position_part1(230, 3), position_part1(324, 3), position_part1(409, 3)];
+        
+        scatter3(id_pos_X, id_pos_Y, id_pos_Z, pos_size, [0.8500 0.3250 0.0980], "filled");
+        
+        scatter3(position_part1(i, 1), position_part1(i, 2), position_part1(i, 3), pos_size, "b", "filled");
+        plot3([position_part1(1:i-1, 1), position_part1(2:i, 1)], [position_part1(1:i-1, 2), position_part1(2:i, 2)], [position_part1(1:i-1, 3), position_part1(2:i, 3)], "c");
+        
+%         legend("Starting position", "Unidentified targets", "Identified targets", "Drone position when a target is identified", "Drone position", "Trajectory", "Location", "northwest", "FontSize", font_size)
+    else
+        scatter3(targetsPos_X, targetsPos_Y, targetsPos_Z, target_size, "k", "filled", "s");
+        scatter3(targetsPos_X, targetsPos_Y, targetsPos_Z, target_size, "g", "filled", "s");
+        
+        id_pos_X = [position_part1(165, 1), position_part1(230, 1), position_part1(324, 1), position_part1(409, 1), position_part1(469, 1)];
+        id_pos_Y = [position_part1(165, 2), position_part1(230, 2), position_part1(324, 2), position_part1(409, 2), position_part1(469, 2)];
+        id_pos_Z = [position_part1(165, 3), position_part1(230, 3), position_part1(324, 3), position_part1(409, 3), position_part1(469, 3)];
+        
+        scatter3(id_pos_X, id_pos_Y, id_pos_Z, pos_size, [0.8500 0.3250 0.0980], "filled");
+        
+        scatter3(position_part1(i, 1), position_part1(i, 2), position_part1(i, 3), pos_size, "b", "filled");
+        plot3([position_part1(1:i-1, 1), position_part1(2:i, 1)], [position_part1(1:i-1, 2), position_part1(2:i, 2)], [position_part1(1:i-1, 3), position_part1(2:i, 3)], "c");
+        
+%         legend("Starting position", "Unidentified targets", "Identified targets", "Drone position when a target is identified", "Drone position", "Trajectory", "Location", "northwest", "FontSize", font_size)
+    end
+    
+    drawnow
+    view3D(i-1) = getframe;
+    hold off;
+    
+end
+
+% movie(view3D, 1, 8);
+
+fh = figure;
+fh.Position = [0, 50, 900, 600];
+loops = size(position_part1, 1);
+view2D(loops) = struct('cdata',[],'colormap',[]);
+for i=2:loops
+    
+    scatter3(position_part1(1, 1), position_part1(1, 2), position_part1(1, 3), initPos_size, "r", "filled", "v");
+    
+    view(90, 90);
+    axis([-30, 40, -42, 21, 0, 30])
+    xlabel("x [m]")
+    ylabel("y [m]")
+    zlabel("z [m]")
+    hold on;
+    
+    % Change the target color and show the position of the drone when a
+    % target is identified
+    if i < 165
+        scatter3(targetsPos_X, targetsPos_Y, targetsPos_Z, target_size, "k", "filled", "s");
+        
+        scatter3(position_part1(i, 1), position_part1(i, 2), position_part1(i, 3), pos_size, "b", "filled");
+        
+        plot3([position_part1(1:i-1, 1), position_part1(2:i, 1)], [position_part1(1:i-1, 2), position_part1(2:i, 2)], [position_part1(1:i-1, 3), position_part1(2:i, 3)], "c");
+        
+%         legend("Starting position", "Unidentified targets", "Drone position", "Trajectory", "Location", "northwest", "FontSize", font_size)
+    elseif i < 230
+        scatter3([targetsPos_X(1:3), targetsPos_X(end)], [targetsPos_Y(1:3), targetsPos_Y(end)], [targetsPos_Z(1:3), targetsPos_Z(end)], target_size, "k", "filled", "s");
+        scatter3(targetsPos_X(4), targetsPos_Y(4), targetsPos_Z(4), target_size, "g", "filled", "s");
+        
+        scatter3(position_part1(165, 1), position_part1(165, 2), position_part1(165, 3), pos_size, [0.8500 0.3250 0.0980], "filled");
+        
+        scatter3(position_part1(i, 1), position_part1(i, 2), position_part1(i, 3), pos_size, "b", "filled");
+        plot3([position_part1(1:i-1, 1), position_part1(2:i, 1)], [position_part1(1:i-1, 2), position_part1(2:i, 2)], [position_part1(1:i-1, 3), position_part1(2:i, 3)], "c");
+        
+%         legend("Starting position", "Unidentified targets", "Identified targets", "Drone position when a target is identified", "Drone position", "Trajectory", "Location", "northwest", "FontSize", font_size)
+    elseif i < 324
+        scatter3(targetsPos_X(1:3), targetsPos_Y(1:3), targetsPos_Z(1:3), target_size, "k", "filled", "s");
+        scatter3(targetsPos_X(4:end), targetsPos_Y(4:end), targetsPos_Z(4:end), target_size, "g", "filled", "s");
+        
+        id_pos_X = [position_part1(165, 1), position_part1(230, 1)];
+        id_pos_Y = [position_part1(165, 2), position_part1(230, 2)];
+        id_pos_Z = [position_part1(165, 3), position_part1(230, 3)];
+        
+        scatter3(id_pos_X, id_pos_Y, id_pos_Z, pos_size, [0.8500 0.3250 0.0980], "filled");
+        
+        scatter3(position_part1(i, 1), position_part1(i, 2), position_part1(i, 3), pos_size, "b", "filled");
+        plot3([position_part1(1:i-1, 1), position_part1(2:i, 1)], [position_part1(1:i-1, 2), position_part1(2:i, 2)], [position_part1(1:i-1, 3), position_part1(2:i, 3)], "c");
+        
+%         legend("Starting position", "Unidentified targets", "Identified targets", "Drone position when a target is identified", "Drone position", "Trajectory", "Location", "northwest", "FontSize", font_size)
+    elseif i < 409
+        scatter3([targetsPos_X(1), targetsPos_X(3)], [targetsPos_Y(1), targetsPos_Y(3)], [targetsPos_Z(1), targetsPos_Z(3)], target_size, "k", "filled", "s");
+        scatter3([targetsPos_X(2), targetsPos_X(4:end)], [targetsPos_Y(2), targetsPos_Y(4:end)], [targetsPos_Z(2), targetsPos_Z(4:end)], target_size, "g", "filled", "s");
+        
+        id_pos_X = [position_part1(165, 1), position_part1(230, 1), position_part1(324, 1)];
+        id_pos_Y = [position_part1(165, 2), position_part1(230, 2), position_part1(324, 2)];
+        id_pos_Z = [position_part1(165, 3), position_part1(230, 3), position_part1(324, 3)];
+        
+        scatter3(id_pos_X, id_pos_Y, id_pos_Z, pos_size, [0.8500 0.3250 0.0980], "filled");
+        
+        scatter3(position_part1(i, 1), position_part1(i, 2), position_part1(i, 3), pos_size, "b", "filled");
+        plot3([position_part1(1:i-1, 1), position_part1(2:i, 1)], [position_part1(1:i-1, 2), position_part1(2:i, 2)], [position_part1(1:i-1, 3), position_part1(2:i, 3)], "c");
+        
+%         legend("Starting position", "Unidentified targets", "Identified targets", "Drone position when a target is identified", "Drone position", "Trajectory", "Location", "northwest", "FontSize", font_size)
+    elseif i < 469
+        scatter3(targetsPos_X(3), targetsPos_Y(3), targetsPos_Z(3), target_size, "k", "filled", "s");
+        scatter3([targetsPos_X(1:2), targetsPos_X(4:end)], [targetsPos_Y(1:2), targetsPos_Y(4:end)], [targetsPos_Z(1:2), targetsPos_Z(4:end)], target_size, "g", "filled", "s");
+        
+        id_pos_X = [position_part1(165, 1), position_part1(230, 1), position_part1(324, 1), position_part1(409, 1)];
+        id_pos_Y = [position_part1(165, 2), position_part1(230, 2), position_part1(324, 2), position_part1(409, 2)];
+        id_pos_Z = [position_part1(165, 3), position_part1(230, 3), position_part1(324, 3), position_part1(409, 3)];
+        
+        scatter3(id_pos_X, id_pos_Y, id_pos_Z, pos_size, [0.8500 0.3250 0.0980], "filled");
+        
+        scatter3(position_part1(i, 1), position_part1(i, 2), position_part1(i, 3), pos_size, "b", "filled");
+        plot3([position_part1(1:i-1, 1), position_part1(2:i, 1)], [position_part1(1:i-1, 2), position_part1(2:i, 2)], [position_part1(1:i-1, 3), position_part1(2:i, 3)], "c");
+        
+%         legend("Starting position", "Unidentified targets", "Identified targets", "Drone position when a target is identified", "Drone position", "Trajectory", "Location", "northwest", "FontSize", font_size)
+    else
+        scatter3(targetsPos_X, targetsPos_Y, targetsPos_Z, target_size, "k", "filled", "s");
+        scatter3(targetsPos_X, targetsPos_Y, targetsPos_Z, target_size, "g", "filled", "s");
+        
+        id_pos_X = [position_part1(165, 1), position_part1(230, 1), position_part1(324, 1), position_part1(409, 1), position_part1(469, 1)];
+        id_pos_Y = [position_part1(165, 2), position_part1(230, 2), position_part1(324, 2), position_part1(409, 2), position_part1(469, 2)];
+        id_pos_Z = [position_part1(165, 3), position_part1(230, 3), position_part1(324, 3), position_part1(409, 3), position_part1(469, 3)];
+        
+        scatter3(id_pos_X, id_pos_Y, id_pos_Z, pos_size, [0.8500 0.3250 0.0980], "filled");
+        
+        scatter3(position_part1(i, 1), position_part1(i, 2), position_part1(i, 3), pos_size, "b", "filled");
+        plot3([position_part1(1:i-1, 1), position_part1(2:i, 1)], [position_part1(1:i-1, 2), position_part1(2:i, 2)], [position_part1(1:i-1, 3), position_part1(2:i, 3)], "c");
+        
+%         legend("Starting position", "Unidentified targets", "Identified targets", "Drone position when a target is identified", "Drone position", "Trajectory", "Location", "northwest", "FontSize", font_size)
+    end
+    
+    drawnow
+    view2D(i-1) = getframe;
+    hold off;
+    
+end
+
 % fh = figure;
-% fh.WindowState = 'maximized';
+% fh.Position = [0, 50, 900, 600];
 % loops = size(position_part1, 1);
-% F(loops) = struct('cdata',[],'colormap',[]);
-% scatter3(position_part1(1, 1), position_part1(1, 2), position_part1(1, 3), 50, "b", "filled");
-% view(90, 90);
-% axis([-30, 40, -50, 20, 0, 30])
-% xlabel("m")
-% ylabel("m")
-% zlabel("m")
-% drawnow
-% F(1) = getframe;
-% hold on;
+% view2D(loops) = struct('cdata',[],'colormap',[]);
 % for i=2:loops
 %     
-%     scatter3(position_part1(i, 1), position_part1(i, 2), position_part1(i, 3), 50, "b", "filled");
-%     plot3([position_part1(i-1, 1), position_part1(i, 1)], [position_part1(i-1, 2), position_part1(i, 2)], [position_part1(i-1, 3), position_part1(i, 3)], "k");
+%     scatter(position_part1(1, 1), position_part1(1, 2), initPos_size, "r", "filled", "v");
+%     axis([-30, 40, -50, 21])
+%     xlabel("x [m]")
+%     ylabel("y [m]")
+%     hold on;
+%     
+%     % Change the target color and show the position of the drone when a
+%     % target is identified
+%     if i < 165
+%         scatter(targetsPos_X, targetsPos_Y, target_size, "k", "filled", "s");
+%         
+%         scatter(position_part1(i, 1), position_part1(i, 2), pos_size, "b", "filled");
+%         
+%         plot([position_part1(1:i-1, 1), position_part1(2:i, 1)], [position_part1(1:i-1, 2), position_part1(2:i, 2)], "c");
+%         
+% %         legend("Starting position", "Unidentified targets", "Drone position", "Trajectory", "Location", "northeast", "FontSize", font_size)
+%     elseif i < 230
+%         scatter([targetsPos_X(1:3), targetsPos_X(end)], [targetsPos_Y(1:3), targetsPos_Y(end)], target_size, "k", "filled", "s");
+%         scatter(targetsPos_X(4), targetsPos_Y(4), target_size, "g", "filled", "s");
+%         
+%         scatter(position_part1(165, 1), position_part1(165, 2), pos_size, [0.8500 0.3250 0.0980], "filled");
+%         
+%         scatter(position_part1(i, 1), position_part1(i, 2), pos_size, "b", "filled");
+%         plot([position_part1(1:i-1, 1), position_part1(2:i, 1)], [position_part1(1:i-1, 2), position_part1(2:i, 2)], "c");
+%         
+% %         legend("Starting position", "Unidentified targets", "Identified targets", "Drone position when a target is identified", "Drone position", "Trajectory", "Location", "northeast", "FontSize", font_size)
+%     elseif i < 324
+%         scatter(targetsPos_X(1:3), targetsPos_Y(1:3), target_size, "k", "filled", "s");
+%         scatter(targetsPos_X(4:end), targetsPos_Y(4:end), target_size, "g", "filled", "s");
+%         
+%         id_pos_X = [position_part1(165, 1), position_part1(230, 1)];
+%         id_pos_Y = [position_part1(165, 2), position_part1(230, 2)];
+%         
+%         scatter(id_pos_X, id_pos_Y, pos_size, [0.8500 0.3250 0.0980], "filled");
+%         
+%         scatter(position_part1(i, 1), position_part1(i, 2), pos_size, "b", "filled");
+%         plot([position_part1(1:i-1, 1), position_part1(2:i, 1)], [position_part1(1:i-1, 2), position_part1(2:i, 2)], "c");
+%         
+% %         legend("Starting position", "Unidentified targets", "Identified targets", "Drone position when a target is identified", "Drone position", "Trajectory", "Location", "northeast", "FontSize", font_size)
+%     elseif i < 409
+%         scatter([targetsPos_X(1), targetsPos_X(3)], [targetsPos_Y(1), targetsPos_Y(3)], target_size, "k", "filled", "s");
+%         scatter([targetsPos_X(2), targetsPos_X(4:end)], [targetsPos_Y(2), targetsPos_Y(4:end)], target_size, "g", "filled", "s");
+%         
+%         id_pos_X = [position_part1(165, 1), position_part1(230, 1), position_part1(324, 1)];
+%         id_pos_Y = [position_part1(165, 2), position_part1(230, 2), position_part1(324, 2)];
+%         
+%         scatter(id_pos_X, id_pos_Y, pos_size, [0.8500 0.3250 0.0980], "filled");
+%         
+%         scatter(position_part1(i, 1), position_part1(i, 2), pos_size, "b", "filled");
+%         plot([position_part1(1:i-1, 1), position_part1(2:i, 1)], [position_part1(1:i-1, 2), position_part1(2:i, 2)], "c");
+%         
+% %         legend("Starting position", "Unidentified targets", "Identified targets", "Drone position when a target is identified", "Drone position", "Trajectory", "Location", "northeast", "FontSize", font_size)
+%     elseif i < 469
+%         scatter(targetsPos_X(3), targetsPos_Y(3), target_size, "k", "filled", "s");
+%         scatter([targetsPos_X(1:2), targetsPos_X(4:end)], [targetsPos_Y(1:2), targetsPos_Y(4:end)], target_size, "g", "filled", "s");
+%         
+%         id_pos_X = [position_part1(165, 1), position_part1(230, 1), position_part1(324, 1), position_part1(409, 1)];
+%         id_pos_Y = [position_part1(165, 2), position_part1(230, 2), position_part1(324, 2), position_part1(409, 2)];
+%         
+%         scatter(id_pos_X, id_pos_Y, pos_size, [0.8500 0.3250 0.0980], "filled");
+%         
+%         scatter(position_part1(i, 1), position_part1(i, 2), pos_size, "b", "filled");
+%         plot([position_part1(1:i-1, 1), position_part1(2:i, 1)], [position_part1(1:i-1, 2), position_part1(2:i, 2)], "c");
+%         
+% %         legend("Starting position", "Unidentified targets", "Identified targets", "Drone position when a target is identified", "Drone position", "Trajectory", "Location", "northeast", "FontSize", font_size)
+%     else
+%         scatter(targetsPos_X, targetsPos_Y, target_size, "k", "filled", "s");
+%         scatter(targetsPos_X, targetsPos_Y, target_size, "g", "filled", "s");
+%         
+%         id_pos_X = [position_part1(165, 1), position_part1(230, 1), position_part1(324, 1), position_part1(409, 1), position_part1(469, 1)];
+%         id_pos_Y = [position_part1(165, 2), position_part1(230, 2), position_part1(324, 2), position_part1(409, 2), position_part1(469, 2)];
+%         
+%         scatter(id_pos_X, id_pos_Y, pos_size, [0.8500 0.3250 0.0980], "filled");
+%         
+%         scatter(position_part1(i, 1), position_part1(i, 2), pos_size, "b", "filled");
+%         plot([position_part1(1:i-1, 1), position_part1(2:i, 1)], [position_part1(1:i-1, 2), position_part1(2:i, 2)], "c");
+%         
+% %         legend("Starting position", "Unidentified targets", "Identified targets", "Drone position when a target is identified", "Drone position", "Trajectory", "Location", "northeast", "FontSize", font_size)
+%     end
+%     
 %     drawnow
-%     F(i) = getframe;
+%     view2D(i-1) = getframe;
+%     hold off;
 %     
 % end
-% 
-% movie(F, 1, 10);
 
-clear loops;
+% movie(view2D, 1, 8);
+
+clear loops fh i;
+clear id_pos_X id_pos_Y id_pos_Z targetsPos_X targetsPos_Y targetsPos_Z;
+clear font_size initPos_size pos_size target_size;
 clear position_part1 position_part2 position_part3_1 position_part3_2;
 clear position_part4 position_part5 position_part6 position_part7;
 clear position_part8 position_part9 position_part10;
